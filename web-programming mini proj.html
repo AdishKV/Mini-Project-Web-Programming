@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mess Feedback Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #ff6b6b;
+            --secondary: #4ecdc4;
+            --accent: #ffe66d;
+            --dark: #292f36;
+            --light: #f7fff7;
+            --gradient: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 100%);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f8ff;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 200, 124, 0.2) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(108, 198, 255, 0.2) 0%, transparent 20%),
+                radial-gradient(circle at 30% 50%, rgba(255, 107, 107, 0.1) 0%, transparent 30%);
+            color: var(--dark);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+            padding: 2rem;
+            background: var(--gradient);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            color: white;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 L0,100 Z" fill="none" stroke="white" stroke-width="0.5" stroke-dasharray="5,5" /></svg>') 0 0 repeat;
+            opacity: 0.2;
+            transform: rotate(15deg);
+            pointer-events: none;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .feedback-form {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feedback-form::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: var(--secondary);
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.3;
+            z-index: 0;
+        }
+        
+        .feedback-form::before {
+            content: "";
+            position: absolute;
+            bottom: -50px;
+            left: -50px;
+            width: 150px;
+            height: 150px;
+            background: var(--primary);
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.2;
+            z-index: 0;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--secondary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.2);
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 1.5rem;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+        
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .file-upload {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+        
+        .file-upload-btn {
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: rgba(255, 255, 255, 0.6);
+            width: 100%;
+        }
+        
+        .file-upload-btn:hover {
+            border-color: var(--primary);
+            background-color: rgba(255, 107, 107, 0.05);
+        }
+        
+        .file-upload-input {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+        
+        .file-upload-text {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .file-upload-text i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+        
+        .btn {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: var(--dark);
+            border: 2px solid #e0e0e0;
+        }
+        
+        .btn-secondary:hover {
+            background: #f5f5f5;
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .report-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+        }
+        
+        .report-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .report-card {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid #e0e0e0;
+            cursor: pointer;
+        }
+        
+        .report-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-color: var(--secondary);
+        }
+        
+        .report-card i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .report-card h3 {
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+        
+        .report-card p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .floating-icons {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .floating-icon {
+            position: absolute;
+            opacity: 0.1;
+            animation: float 15s infinite linear;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+            }
+            100% {
+                transform: translateY(0) rotate(360deg);
+            }
+        }
+        
+        .confirmation {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            z-index: 100;
+            max-width: 400px;
+            display: none;
+        }
+        
+        .confirmation.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -40%);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+        
+        .confirmation i {
+            font-size: 4rem;
+            color: var(--secondary);
+            margin-bottom: 1rem;
+        }
+        
+        .confirmation h2 {
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+        
+        .confirmation p {
+            margin-bottom: 1.5rem;
+            color: #666;
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 99;
+            display: none;
+        }
+        
+        .overlay.show {
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+            
+            .report-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+  
+    
+    <div class="container">
+        <header>
+            <h1>Mess Feedback Portal</h1>
+            <p class="subtitle">Share your suggestions to help us improve your dining experience</p>
+        </header>
+        
+        <section class="feedback-form">
+            <h2 style="margin-bottom: 1.5rem; color: var(--dark);">Submit Feedback</h2>
+            
+            <form id="feedbackForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="regNo">Registration Number</label>
+                        <input type="text" id="regNo" name="regNo" required placeholder="Enter your registration number">
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Student Name</label>
+                        <input type="text" id="name" name="name" required placeholder="Enter your full name">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="block">Block</label>
+                        <input type="text" id="block" name="block" required placeholder="Enter your block">
+                    </div>
+                    <div class="form-group">
+                        <label for="room">Room Number</label>
+                        <input type="text" id="room" name="room" required placeholder="Enter your room number">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="mess">Mess Name</label>
+                        <select id="mess" name="mess" required>
+                            <option value="">Select Mess</option>
+                            <option value="North Mess">North Mess</option>
+                            <option value="South Mess">South Mess</option>
+                            <option value="East Mess">East Mess</option>
+                            <option value="West Mess">West Mess</option>
+                            <option value="Central Mess">Central Mess</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="messType">Mess Type</label>
+                        <select id="messType" name="messType" required>
+                            <option value="">Select Mess Type</option>
+                            <option value="Veg">Veg Mess</option>
+                            <option value="Non-Veg">Non-Veg Mess</option>
+                            <option value="Special">Special Mess</option>
+                            <option value="Night">Night Mess</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="category">Feedback Category</label>
+                    <select id="category" name="category" required>
+                        <option value="">Select Category</option>
+                        <option value="Quality">Food Quality</option>
+                        <option value="Quantity">Food Quantity</option>
+                        <option value="Hygiene">Hygiene</option>
+                        <option value="Timing">Mess Timing</option>
+                        <option value="Others">Others</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="feedbackType">Feedback Type</label>
+                    <select id="feedbackType" name="feedbackType" required>
+                        <option value="">Select Feedback Type</option>
+                        <option value="Suggestion">Suggestion</option>
+                        <option value="Improvement">Improvement</option>
+                        <option value="Complaint">Complaint</option>
+                        <option value="Appreciation">Appreciation</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="comments">Detailed Feedback</label>
+                    <textarea id="comments" name="comments" required placeholder="Please provide detailed feedback..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Upload Proof (Optional)</label>
+                    <div class="file-upload">
+                        <label class="file-upload-btn">
+                            <input type="file" class="file-upload-input" id="proof" name="proof" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                            <div class="file-upload-text">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p>Click to upload or drag and drop</p>
+                                <small>PDF, DOC, JPG (Max. 5MB)</small>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="reset" class="btn btn-secondary">
+                        <i class="fas fa-redo"></i> Reset
+                    </button>
+                    <button type="submit" class="btn">
+                        <i class="fas fa-paper-plane"></i> Submit Feedback
+                    </button>
+                </div>
+            </form>
+        </section>
+        
+        <section class="report-section">
+            <h2 style="margin-bottom: 1rem; color: var(--dark);">Generate Reports</h2>
+            <p style="color: #666; margin-bottom: 1rem;">Select a report type to generate detailed feedback analysis</p>
+            
+            <div class="report-options">
+                <div class="report-card" onclick="generateReport('student')">
+                    <i class="fas fa-user-graduate"></i>
+                    <h3>Student-wise</h3>
+                    <p>View feedback by individual students</p>
+                </div>
+                
+                <div class="report-card" onclick="generateReport('weekly')">
+                    <i class="fas fa-calendar-week"></i>
+                    <h3>Weekly</h3>
+                    <p>Feedback submitted this week</p>
+                </div>
+                
+                <div class="report-card" onclick="generateReport('monthly')">
+                    <i class="fas fa-calendar-alt"></i>
+                    <h3>Monthly</h3>
+                    <p>Feedback submitted this month</p>
+                </div>
+                
+                <div class="report-card" onclick="generateReport('mess')">
+                    <i class="fas fa-utensils"></i>
+                    <h3>Mess-wise</h3>
+                    <p>Feedback by mess hall</p>
+                </div>
+                
+                <div class="report-card" onclick="generateReport('category')">
+                    <i class="fas fa-tags"></i>
+                    <h3>Category-wise</h3>
+                    <p>Feedback by category</p>
+                </div>
+                
+                <div class="report-card" onclick="generateReport('all')">
+                    <i class="fas fa-file-export"></i>
+                    <h3>Full Report</h3>
+                    <p>Export all feedback data</p>
+                </div>
+            </div>
+            
+            <div class="form-actions" style="margin-top: 2rem;">
+                <button class="btn btn-secondary" onclick="showExportOptions()">
+                    <i class="fas fa-file-download"></i> Export Options
+                </button>
+            </div>
+        </section>
+    </div>
+    
+    <div class="overlay" id="overlay"></div>
+    
+    <div class="confirmation" id="confirmation">
+        <i class="fas fa-check-circle"></i>
+        <h2>Thank You!</h2>
+        <p>Your feedback has been submitted successfully. We appreciate your time and will review your suggestions.</p>
+        <button class="btn" onclick="hideConfirmation()">
+            <i class="fas fa-thumbs-up"></i> Great!
+        </button>
+    </div>
+    
+    <script>
+        // Form submission
+        document.getElementById('feedbackForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Here you would typically send the data to your backend
+            // For this example, we'll just show a confirmation
+            showConfirmation();
+            
+            // Reset form after submission
+            this.reset();
+        });
+        
+        // Show confirmation modal
+        function showConfirmation() {
+            document.getElementById('overlay').classList.add('show');
+            document.getElementById('confirmation').classList.add('show');
+        }
+        
+        // Hide confirmation modal
+        function hideConfirmation() {
+            document.getElementById('overlay').classList.remove('show');
+            document.getElementById('confirmation').classList.remove('show');
+        }
+        
+        // Generate report
+        function generateReport(type) {
+            alert(`Generating ${type} report...`);
+            // In a real application, this would connect to your backend
+            // to generate and download the report in the selected format
+        }
+        
+        // Show export options
+        function showExportOptions() {
+            const format = prompt("Select export format:\n1. Excel\n2. PDF", "1");
+            
+            if (format === "1") {
+                alert("Preparing Excel export...");
+            } else if (format === "2") {
+                alert("Preparing PDF export...");
+            }
+        }
+        
+        // File upload styling
+        const fileUpload = document.querySelector('.file-upload-input');
+        const fileUploadText = document.querySelector('.file-upload-text');
+        
+        fileUpload.addEventListener('change', function() {
+            if (this.files.length > 0) {
+                fileUploadText.innerHTML = `
+                    <i class="fas fa-file-alt"></i>
+                    <p>${this.files[0].name}</p>
+                    <small>${(this.files[0].size / 1024 / 1024).toFixed(2)} MB</small>
+                `;
+            }
+        });
+        
+        // Drag and drop functionality
+        const fileUploadBtn = document.querySelector('.file-upload-btn');
+        
+        fileUploadBtn.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            fileUploadBtn.style.borderColor = 'var(--primary)';
+            fileUploadBtn.style.backgroundColor = 'rgba(255, 107, 107, 0.1)';
+        });
+        
+        fileUploadBtn.addEventListener('dragleave', () => {
+            fileUploadBtn.style.borderColor = '#ccc';
+            fileUploadBtn.style.backgroundColor = 'rgba(255, 255, 255, 0.6)';
+        });
+        
+        fileUploadBtn.addEventListener('drop', (e) => {
+            e.preventDefault();
+            fileUploadBtn.style.borderColor = '#ccc';
+            fileUploadBtn.style.backgroundColor = 'rgba(255, 255, 255, 0.6)';
+            
+            if (e.dataTransfer.files.length) {
+                fileUpload.files = e.dataTransfer.files;
+                
+                fileUploadText.innerHTML = `
+                    <i class="fas fa-file-alt"></i>
+                    <p>${e.dataTransfer.files[0].name}</p>
+                    <small>${(e.dataTransfer.files[0].size / 1024 / 1024).toFixed(2)} MB</small>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>
